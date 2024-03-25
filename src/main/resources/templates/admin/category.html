@@ -15,7 +15,9 @@
 
                 <main>
 
-                  <button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#addModal">Add  New Category</button>
+                  <button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#addModal">
+                      <i class="fa-solid fa-plus"></i>  Add New Category
+                  </button>
                     <table class="table" >
                         <thead>
                         <tr>
@@ -234,7 +236,7 @@
             dataType: 'json',
             data: JSON.stringify(data),
             success : function (data){
-                window.location.href = "/admin/api/v1/category?page=1&limit=3";
+                window.location.href = "/admin/api/v1/category?page=1&limit=4";
 
             },
             error : function (data){
@@ -265,7 +267,7 @@
                 data: JSON.stringify(data),
 
                 success: function (data){
-                    window.location.href = "/admin/api/v1/category?page=1&limit=3";
+                    window.location.href = "/admin/api/v1/category?page=1&limit=4";
                 },
                 error : function (data){
                     console.log("Error")
@@ -278,6 +280,7 @@
         })
 
         /*  Update Category Ajax End */
+
         /*Delete Category Ajax*/
         $('#confirmDeleteBtn').click(function (e){
 
@@ -289,7 +292,7 @@
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function (){
-                    window.location.href = "/admin/api/v1/category?page=1&limit=3";
+                    window.location.href = "/admin/api/v1/category?page=1&limit=4";
                 },
                 error: function (){
                    console.log(this.url)
@@ -305,7 +308,7 @@
         /*Pagination Start*/
         var totalPages = $('#totalPages').val();
         var currentPage = $('#page').val();
-        var limit = 3;
+        var limit = 4;
 
         $('#pagination').twbsPagination({
             totalPages: totalPages,
