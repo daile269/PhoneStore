@@ -23,11 +23,14 @@ public class SupplierController {
     @GetMapping
     public String getSuppliers(Model model,
                                @RequestParam ("page") int page,
-                               @RequestParam ("limit")int limit){
+                               @RequestParam ("limit")int limit,
+                               @RequestParam("message") String message){
         Pageable pageable = PageRequest.of(page-1,limit);
         model.addAttribute("page",page);
+        model.addAttribute("limit",limit);
         model.addAttribute("totalPages", (int) Math.ceil((double) supplierService.totalItem()/limit));
         model.addAttribute("suppliers",supplierService.getAllSuppliers(pageable));
+        model.addAttribute("message",message);
         return "admin/supplier";
     }
 
@@ -62,7 +65,7 @@ public class SupplierController {
     @ResponseBody
     public List<Supplier> deleteSupplier(@PathVariable Long id){
         supplierService.deleteSupplier(id);
-        return supplierService.getAllSuppliers(PageRequest.of(1,3));
+        return supplierService.getSupplierNoPageable();
     }
 
 }

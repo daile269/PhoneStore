@@ -8,6 +8,8 @@ import java.util.List;
 public interface ICategoryService {
     List<Category> getAllCategories(Pageable pageable);
 
+    List<Category> getCategoryNoPageable();
+
     Category findById(Long id);
 
     Category saveCategory(Category category);

@@ -18,24 +18,23 @@ public class CategoryController {
     @Autowired
     private ICategoryService categoryService;
 
-  /*  @GetMapping
-    public String getAllCategory(Model model){
-        Pageable pageable = PageRequest.of(0,3);
-        model.addAttribute("categories",categoryService.getAllCategories(pageable));
-        return "admin/category";
-    }*/
+
 
     @GetMapping()
     public String getAllCategoriesPagination(@RequestParam("page") int page,
                                              @RequestParam ("limit") int limit,
+                                             @RequestParam("message") String message,
                                              Model model){
 
         Pageable pageable = PageRequest.of(page-1,limit);
         List<Category> categories = categoryService.getAllCategories(pageable);
         model.addAttribute("categories",categories);
+        model.addAttribute("limit",limit);
         model.addAttribute("totalPages",(int) Math.ceil( (double) (categoryService.totalItem())/limit));
 
         model.addAttribute("page",page);
+
+        model.addAttribute("message",message);
 
         return "admin/category";
     }
@@ -69,7 +68,7 @@ public class CategoryController {
     @ResponseBody
     public List<Category> deleteOneCategory(@PathVariable Long id){
         categoryService.deleteOneCategory(id);
-        return categoryService.getAllCategories(PageRequest.of(0,3));
+        return categoryService.getCategoryNoPageable();
     }
 
 }

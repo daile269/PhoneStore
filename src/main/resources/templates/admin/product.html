@@ -12,7 +12,23 @@
             <div th:replace="~{admin/fragments/navbar::navbar}"></div>
             <!--Navbar End-->
             <div id="layoutSidenav_content">
+                <!--Message-->
+                <div th:if="${!message.isEmpty()}">
 
+                    <div th:if="${message == 'success'}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        Success!!!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${message == 'fail'}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Error! An error occurred
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <!--Message-->
                 <main>
                     <button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#addModal">
                         <i class="fa-solid fa-plus"></i> Add New Product
@@ -21,6 +37,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Price (VNĐ)</th>
                             <th>Sale Number</th>
@@ -29,13 +46,24 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="item:${products} ">
-                            <td th:text="${itemStat.index+1}"></td>
+                        <tr th:each="item:${products}" th:with=" tt= ${limit}*(${page}-1)">
+                            <td th:text="${(itemStat.index)+1+ tt}"></td>
+                            <td>
+                                <a id="photoButton" th:href="@{'/admin/uploads/'+ ${item.image}}">
+                                    <img th:src="@{'/admin/uploads/'+ ${item.image}}" width="65px" height="50px" >
+                                </a>
+                                <a id="updateImageBtn" alt="Update Image Product" th:href="@{/admin/api/v1/product/image/{id}(id=${item.id})}">
+                                    <i class="fa-solid fa-pen-to-square" style="height: 21px; width: 35px; margin-left: 10px"></i>
+                                </a>
+                            </td>
                             <td th:text="${item.name}"></td>
                             <td th:text="${#numbers.formatDecimal(item.currentPrice,2,0)}"></td>
                             <td th:text="${item.saleNumber}"></td>
                             <td th:text="${item.stockNumber}"></td>
                             <td>
+                                <a th:href="@{/admin/api/v1/product/findById/{id}(id=${item.id})}" class="btn btn-primary" id="editBtn" alt="Edit Product"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a th:href="@{/admin/api/v1/product/findById/{id}(id=${item.id})}" class="btn btn-success" id="detailsBtn" alt="Details Product"><i class="fa-solid fa-circle-info"></i></a>
+                                <a th:href="@{/admin/api/v1/product/delete/{id}(id=${item.id})}" class="btn btn-danger" id="deleteBtn" alt="Delete Product"><i class="fa-solid fa-trash"></i></a>
                             </td>
                         </tr>
                         </tbody>
@@ -45,35 +73,540 @@
                 </main>
 
                 <!--Add Modal Start-->
-                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Add New Product</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body">
-                                <form>
-                                    <div class="form-group">
-                                        <label for="recipient-name" class="col-form-label">Recipient:</label>
-                                        <input type="text" class="form-control" id="recipient-name">
-                                    </div>
+                                <form id="formAddModal" enctype="multipart/form-data">
+
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="50%">
+                                                <div class="form-group row">
+                                                    <label for="name" class="col-form-label">Name:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="name" name="name" required>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="description" class="col-form-label">Description:</label>
+                                                    <div class="col-sm-10">
+
+                                                    <input type="text" class="form-control" id="description" name="description">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="category" class="col-form-label">Category:</label>
+                                                    <div class="col-sm-10">
+                                                        <select class="form-control" id="category" name="categoryId" required>
+                                                            <option>-SELECT-</option>
+                                                            <option th:each="category : ${categories}"
+                                                                    th:value="${category.id}"
+                                                                    th:text="${category.name}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="supplier" class="col-form-label">Supplier:</label>
+                                                    <div class="col-sm-10">
+                                                        <select class="form-control" id="supplier" name="supplierId" required>
+                                                            <option>-SELECT-</option>
+                                                            <option th:each="supplier : ${suppliers}"
+                                                                    th:value="${supplier.id}"
+                                                                    th:text="${supplier.name}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="image" class="col-form-label">Image:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="file" class="form-control" id="image" name="image">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="price" class="col-form-label">Price:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="price" name="price" required>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="form-group row">
+                                                    <label for="discount" class="col-form-label">Discount:</label>
+                                                    <div class="col-sm-10">
+                                                    <input type="number" class="form-control" id="discount" name="discount" >
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                           <!-- Specifications-->
+                                            <td width="50%" style="padding-left: 10px">
+                                                <div class="form-group row">
+                                                    <label for="cpu" class="col-form-label">CPU:</label>
+                                                    <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="cpu" name="cpu">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="color" class="col-form-label">Color:</label>
+                                                    <div class="col-sm-10">
+                                                    <input type="text" class="form-control" id="color" name="color">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="battery" class="col-form-label">Battery:</label>
+                                                    <div class="col-sm-10">
+                                                    <input type="number" class="form-control" id="battery" name="battery">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="dateOfManufacture" class="col-form-label">Date Of Manufacture:</label>
+                                                    <div class="col-sm-10">
+                                                    <input type="date" class="form-control" id="dateOfManufacture" name="dateOfManufacture">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label for="ram" class="col-form-label">RAM:</label>
+                                                    <div class="col-sm-10">
+
+                                                    <input type="number" class="form-control" id="ram" name="ram" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="screen" class="col-form-label">Screen:</label>
+                                                    <div class="col-sm-10">
+
+                                                    <input type="number" class="form-control" id="screen" name="screen" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="stockNumber" class="col-form-label">Stock Number:</label>
+                                                    <div class="col-sm-10">
+
+                                                    <input type="number" class="form-control" id="stockNumber" name="stockNumber" >
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="saleNumber" value="0">
+                                            </td>
+
+                                        </tr>
+
+                                    </table>
+
 
                                 </form>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Send message</button>
+                                <button type="button" class="btn btn-primary" id="addNew" >Add Product</button>
                             </div>
                         </div>
                     </div>
                 </div>
                 <!--Add Modal End-->
 
+                <!-- Edit modal start   -->
+                <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLable" style="text-align: center">Update Product</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal" >&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formEditModal">
+
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="50%">
+                                                <div class="form-group">
+                                                    <label for="editId" class="col-form-label">Id:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editId" name="id" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="name" class="col-form-label">Name:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editName" name="name" required>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="description" class="col-form-label">Description:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="text" class="form-control" id="editDescription" name="description">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="category" class="col-form-label">Category:</label>
+                                                    <div class="col-sm-10">
+                                                        <select class="form-control" id="editCategory" name="categoryId" required>
+                                                            <option>-SELECT-</option>
+                                                            <option th:each="category : ${categories}"
+                                                                    th:value="${category.id}"
+                                                                    th:text="${category.name}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="supplier" class="col-form-label">Supplier:</label>
+                                                    <div class="col-sm-10">
+                                                        <select class="form-control" id="editSupplier" name="supplierId" required>
+                                                            <option>-SELECT-</option>
+                                                            <option th:each="supplier : ${suppliers}"
+                                                                    th:value="${supplier.id}"
+                                                                    th:text="${supplier.name}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="image" class="col-form-label">Image:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="file" class="form-control" id="editImage" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="price" class="col-form-label">Price:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="editPrice" name="price" required>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="form-group row">
+                                                    <label for="discount" class="col-form-label">Discount:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="editDiscount" name="discount" >
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <!-- Specifications-->
+                                            <td width="50%" style="padding-left: 10px">
+                                                <div class="form-group row">
+                                                    <label for="cpu" class="col-form-label">CPU:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editCpu" name="cpu">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="color" class="col-form-label">Color:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editColor" name="color">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="battery" class="col-form-label">Battery:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="editBattery" name="battery">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="dateOfManufacture" class="col-form-label">Date Of Manufacture:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="date" class="form-control" id="editDateOfManufacture" name="dateOfManufacture">
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label for="ram" class="col-form-label">RAM:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="number" class="form-control" id="editRam" name="ram" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="screen" class="col-form-label">Screen:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="number" class="form-control" id="editScreen" name="screen" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="stockNumber" class="col-form-label">Stock Number:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="number" class="form-control" id="editStockNumber" name="stockNumber" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="editSaleNumber" class="col-form-label">Sale Number:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="editSaleNumber" name="saleNumber" >
+                                                    </div>
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </table>
+                                </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="updateSupplier">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Edit modal end  -->
+
+                <!-- Details modal start   -->
+                <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="detailsModalLable" style="text-align: center">Details Product</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formDetailsModal">
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="50%">
+                                                <div class="form-group">
+                                                    <label for="editId" class="col-form-label">Id:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsId" name="id" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="name" class="col-form-label">Name:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsName" name="name" readonly>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="description" class="col-form-label">Description:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="text" class="form-control" id="detailsDescription" name="description" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="category" class="col-form-label">Category:</label>
+                                                    <div class="col-sm-10">
+                                                        <select class="form-control" id="detailsCategory" name="categoryId" disabled>
+                                                            <option>-SELECT-</option>
+                                                            <option th:each="category : ${categories}"
+                                                                    th:value="${category.id}"
+                                                                    th:text="${category.name}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="supplier" class="col-form-label">Supplier:</label>
+                                                    <div class="col-sm-10">
+                                                        <select class="form-control" id="detailsSupplier" name="supplierId" disabled>
+                                                            <option>-SELECT-</option>
+                                                            <option th:each="supplier : ${suppliers}"
+                                                                    th:value="${supplier.id}"
+                                                                    th:text="${supplier.name}">
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="image" class="col-form-label">Image:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="file" class="form-control" id="detailsImage" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="price" class="col-form-label">Price:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="detailsPrice" name="price" readonly>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="form-group row">
+                                                    <label for="discount" class="col-form-label">Discount:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="detailsDiscount" name="discount" readonly >
+                                                    </div>
+                                                </div>
+                                            </td>
+
+                                            <!-- Specifications-->
+                                            <td width="50%" style="padding-left: 10px">
+                                                <div class="form-group row">
+                                                    <label for="cpu" class="col-form-label">CPU:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsCpu" name="cpu" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="color" class="col-form-label">Color:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsColor" name="color" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="battery" class="col-form-label">Battery:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="detailsBattery" name="battery" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="dateOfManufacture" class="col-form-label">Date Of Manufacture:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="date" class="form-control" id="detailsDateOfManufacture" name="dateOfManufacture" readonly>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label for="ram" class="col-form-label">RAM:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="number" class="form-control" id="detailsRam" name="ram" readonly >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="screen" class="col-form-label">Screen:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="number" class="form-control" id="detailsScreen" name="screen" readonly >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="stockNumber" class="col-form-label">Stock Number:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="number" class="form-control" id="detailsStockNumber" name="stockNumber" readonly >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="editSaleNumber" class="col-form-label">Sale Number:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="number" class="form-control" id="detailsSaleNumber" name="saleNumber" readonly >
+                                                    </div>
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </table>
+                                </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Details modal end  -->
+
+                <!--Delete Start-->
+                <div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm Delete</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this Product?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <a class="btn btn-primary" id="confirmDeleteBtn" href="">Sure</a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Delete End-->
+
+                <!--Photo Start-->
+                <div class="modal fade" tabindex="-1" role="dialog" id="photoModal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Image Product</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <img id="productPhoto" src="" width="100%" height="50%">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Photo End-->
+
+                <!--Update Image Start-->
+                <div class="modal" id="updateImageProduct" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update Image Product</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" id="frmUpdateImg" enctype="multipart/form-data" method="post">
+                                    <div class="form-group">
+                                        <label for="imgUpdate" class="col-form-label">Image:</label>
+                                        <input type="file" class="form-control" id="imgUpdate" name="image">
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--Update Image End-->
 
                 <!--Pagination Start-->
+                <form th:action="@{/admin/api/v1/product}" id="formSubmit">
+                    <input type="hidden" th:value="${totalPages}" id="totalPages">
+                    <input type="hidden" th:value="${page}" name="page" id="page">
+                    <input type="hidden" value="" name="limit" id="limit">
+                    <input type="hidden" value="" name="message" >
+
+                </form>
                 <div th:replace="~{admin/fragments/pagination::pagination}"></div>
                 <!--Pagination End-->
                 <!--Footer Start-->
@@ -94,21 +627,113 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <script th:src="@{/admin/js/product.js}"></script>
     <script>
 
-    /*Pagination Start*/
-    $('#pagination').twbsPagination({
-        totalPages: 2,
-        visiblePages: 6,
-        next: 'Next',
-        prev: 'Prev',
-        onPageClick: function (event, page) {
-            //fetch content and render here
-            $('#page-content').text('Page ' + page) + ' content here';
-        }
-    });
 
-    /*Pagination End*/
+        /*Pagination Start*/
+        var totalPages = $('#totalPages').val();
+        var currentPage = $('#page').val();
+        var limit = 4;
+
+        $('#pagination').twbsPagination({
+            totalPages: totalPages,
+            startPage : currentPage,
+            visiblePages: 10,
+            onPageClick: function (event, page) {
+                if(currentPage!= page){
+                    $('#limit').val(limit)
+                    $('#page').val(page);
+                    $('#formSubmit').submit();
+                }
+            }
+        });
+        /*Pagination End*/
+
+        /*Add Supplier Start*/
+
+
+        $('#addNew').click(function (e){
+            e.preventDefault();
+            var data = {};
+            var dataForm = $('#formAddModal').serializeArray();
+
+            $.each(dataForm,function (i,v){
+                data[""+v.name+""] = v.value;
+            })
+
+            $.ajax({
+                url : "/admin/api/v1/product",
+                type: 'POST',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(data),
+                success: function (e){
+                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=success";
+                },
+                error: function (e){
+                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=fail";
+                }
+            })
+        })
+        /*Add Supplier End*/
+
+        /*  Update Category Ajax Start */
+
+        $('#updateSupplier').click(function (e){
+            e.preventDefault();
+            var data = {};
+            var formData = $('#formEditModal').serializeArray();
+
+            $.each(formData,function (i,v){
+                data[""+v.name+""] = v.value;
+            })
+
+            $.ajax({
+                url : "/admin/api/v1/product/"+data.id,
+                type: 'PUT',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(data),
+
+                success: function (data){
+                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=success";
+                },
+                error : function (data){
+                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=fail";
+                }
+
+
+            })
+
+
+        })
+
+        /*  Update Category Ajax End */
+
+        /*Delete Category Ajax*/
+        $('#confirmDeleteBtn').click(function (e){
+
+            var href = $('#confirmDeleteBtn').attr('href');
+            e.preventDefault();
+            $.ajax({
+                url : href,
+                method: 'DELETE',
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (){
+                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=success";
+                },
+                error: function (){
+                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=fail";
+                },
+
+            })
+
+
+        })
+        /*Delete Category Ajax*/
 
     </script>
     </body>

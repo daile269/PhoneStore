@@ -22,6 +22,11 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+    public List<Category> getCategoryNoPageable() {
+        return categoryRepository.findAll();
+    }
+
+    @Override
     public Category findById(Long id) {
         return categoryRepository.findById(id).orElse(null);
     }

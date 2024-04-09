@@ -13,6 +13,23 @@
             <!--Navbar End-->
             <div id="layoutSidenav_content">
 
+                <!--Message-->
+                <div th:if="${!message.isEmpty()}">
+
+                    <div th:if="${message == 'success'}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        Success!!!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${message == 'fail'}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Error! An error occurred
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <!--Message-->
                 <main>
                     <button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#addModal">
                         <i class="fa-solid fa-plus"></i>Add New Supplier
@@ -29,8 +46,8 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr th:each="item:${suppliers} ">
-                            <td th:text="${itemStat.index+1}"></td>
+                        <tr th:each="item:${suppliers} " th:with=" tt= ${limit}*(${page}-1)">
+                            <td th:text="${itemStat.index+ 1 +tt}"></td>
                             <td th:text="${item.name}"></td>
                             <td th:text="${item.address}"></td>
                             <td th:text="${item.description}"></td>
@@ -206,7 +223,7 @@
                     <input type="hidden" th:value="${totalPages}" id="totalPages">
                     <input type="hidden" th:value="${page}" name="page" id="page">
                     <input type="hidden" value="" name="limit" id="limit">
-
+                    <input type="hidden" value="" name="message" >
                 </form>
 
                 <div th:replace="~{admin/fragments/pagination::pagination}"></div>
@@ -227,6 +244,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
     <script th:src="@{/admin/js/supplier.js}"></script>
     </body>
 
@@ -248,15 +266,16 @@
                     dataType: 'json',
                     data: JSON.stringify(data),
                     success: function (e){
-                        window.location.href = "/admin/api/v1/supplier?page=1&limit=4";
+                       window.location.href = "/admin/api/v1/supplier?page=1&limit=4&message=success";
                     },
                     error: function (e){
-                        console.log("Error")
+                        window.location.href = "/admin/api/v1/supplier?page=1&limit=4&message=fail";
                     }
                 })
             })
         /*Add Supplier End*/
 
+        /*  Update Category Ajax Start */
 
         $('#updateSupplier').click(function (e){
             e.preventDefault();
@@ -275,10 +294,10 @@
                 data: JSON.stringify(data),
 
                 success: function (data){
-                    window.location.href = "/admin/api/v1/supplier?page=1&limit=4";
+                    window.location.href = "/admin/api/v1/supplier?page=1&limit=4&message=success";
                 },
                 error : function (data){
-                    console.log("Error")
+                    window.location.href = "/admin/api/v1/supplier?page=1&limit=4&message=fail";
                 }
 
 
@@ -300,10 +319,10 @@
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function (){
-                    window.location.href = "/admin/api/v1/supplier?page=1&limit=4";
+                    window.location.href = "/admin/api/v1/supplier?page=1&limit=4&message=success";
                 },
                 error: function (){
-                    console.log(this.url)
+                    window.location.href = "/admin/api/v1/supplier?page=1&limit=4&message=fail";
                 },
 
             })

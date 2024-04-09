@@ -8,6 +8,7 @@ import java.util.List;
 public interface ISupplierService {
     List<Supplier> getAllSuppliers(Pageable pageable);
 
+    List<Supplier> getSupplierNoPageable();
     Supplier saveSupplier(Supplier supplier);
 
     void deleteSupplier(long id);

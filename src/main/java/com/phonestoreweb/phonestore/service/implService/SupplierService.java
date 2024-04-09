@@ -20,6 +20,11 @@ public class SupplierService implements ISupplierService {
     }
 
     @Override
+    public List<Supplier> getSupplierNoPageable() {
+        return supplierRepository.findAll();
+    }
+
+    @Override
     public Supplier saveSupplier(Supplier supplier) {
         return supplierRepository.save(supplier);
     }
