@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>User Manager Page</title>
+<head th:replace="~{admin/fragments/head::head}">
+    <body class="sb-nav-fixed">
+    <!--Header Start-->
+    <div th:replace="~{admin/fragments/header::header}"></div>
+    <!--Header End-->
+
+        <div id="layoutSidenav">
+            <!--Navbar Start-->
+            <div th:replace="~{admin/fragments/navbar::navbar}"></div>
+            <!--Navbar End-->
+
+            <div id="layoutSidenav_content" >
+                <!--Message-->
+                <div th:if="${!message.isEmpty()}">
+
+                    <div th:if="${message == 'success'}" class="alert alert-success alert-dismissible fade show" role="alert">
+                        Success!!!
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div th:if="${message == 'fail'}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                        Error! Username already exists or An error occurred
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+                <!--Message-->
+                <main>
+                    <h1 class="title" style="display: flex;justify-content: center;color: #5c636a">User</h1>
+                  <button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#addModal">
+                      <i class="fa-solid fa-plus"></i>  Add New User
+                  </button>
+                    <table class="table" >
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Avatar</th>
+                            <th>User Name</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Date Of Birth</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="item:${users}" th:with=" tt= ${limit}*(${page}-1)">
+                            <td th:text="${itemStat.index+1 + tt}"></td>
+                            <td >
+                                <a id="photoButton" th:href="@{${item.urlAvatar}}">
+                                    <img th:src="@{${item.urlAvatar}}" width="65px" height="50px" >
+                                </a>
+                                <a id="updateImageBtn" alt="Update Image Product" th:href="@{/admin/api/v1/user/image/{id}(id=${item.id})}">
+                                    <i class="fa-solid fa-pen-to-square" style="height: 21px; width: 35px; margin-left: 10px"></i>
+                                </a>
+                            </td>
+                            <td th:text="${item.username}"></td>
+                            <td th:text="${item.name}"></td>
+                            <td th:text="${item.email}"></td>
+                            <td th:text="${item.address}"></td>
+                            <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${item.phone}"></td>
+                            <td th:text="${item.role}"></td>
+                            <td>
+                                <div class="btn-group">
+                                    <a th:href="@{/admin/api/v1/user/findById/{id}(id=${item.id})}" class="btn btn-primary" id="editBtn" ><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <a th:href="@{/admin/api/v1/user/findById/{id}(id=${item.id})}" class="btn btn-success" id="detailsBtn" ><i class="fa-solid fa-circle-info"></i></a>
+                                    <a th:href="@{/admin/api/v1/user/delete/{id}(id=${item.id})}" class="btn btn-danger" id="deleteBtn" ><i class="fa-solid fa-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+
+                    </table>
+
+                </main>
+
+                <!--Add Modal Start-->
+                <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel" style="text-align: center">Add User</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formAddModal" >
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="50%">
+                                                <div class="form-group row">
+                                                    <label for="name" class="col-form-label">Name:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="name" name="name" required>
+                                                    </div>
+
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="username" class="col-form-label">Username:</label>
+                                                    <div class="col-sm-10">
+
+                                                        <input type="text" class="form-control" id="username" name="username">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="password" class="col-form-label">Password:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="password" class="form-control" id="password" name="password">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="email" class="col-form-label">Email:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="email" name="email">
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                            <td width="50%" style="padding-left: 10px">
+                                                <div class="form-group row">
+                                                    <label for="address" class="col-form-label">Address:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="address" name="address">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="phone" class="col-form-label">Phone:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="phone" name="phone">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="dateOfManufacture" class="col-form-label">Date Of Manufacture:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="date" class="form-control" id="dateOfManufacture" name="dateOfManufacture">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="role" class="col-form-label">Role:</label>
+                                                    <div class="col-sm-10">
+                                                        <select class="form-control" id="role" name="role" required>
+                                                            <option value="USER" selected>User</option>
+                                                            <option value="ADMIN">Admin</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="status" value="true">
+                                            </td>
+
+                                        </tr>
+
+                                    </table>
+
+
+                                </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="addNew">Add User</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Add Modal End-->
+
+                <!-- Details modal start   -->
+                <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="detailsModalLable" style="text-align: center">Details User</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formDetailsModal">
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="50%">
+                                                <div class="form-group">
+                                                    <label for="editId" class="col-form-label">Id:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsId" name="id" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="name" class="col-form-label">Name:</label>
+                                                    <div class="col-sm-10">
+                                                            <input type="text" class="form-control" id="detailsName" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="name" class="col-form-label">Username:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsUsername" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">Address:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsAddress" readonly>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td width="50%" style="padding-left: 10px">
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">Email:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsEmail" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="detailsId" class="col-form-label">Phone:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsPhone" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">DateOfBirth:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="date" class="form-control" id="detailsDateOfBirth" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">Role:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsRole" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">Status:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="detailsStatus" readonly>
+                                                    </div>
+                                                </div>
+                                            </td>
+
+
+                                        </tr>
+
+                                    </table>
+
+                                </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Details modal end  -->
+
+                <!-- Edit modal start   -->
+                <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="editModalLable" style="text-align: center">Update User</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal" >&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="formEditModal">
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="50%">
+                                                <div class="form-group">
+                                                    <label for="editId" class="col-form-label">Id:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editId" name="id" readonly>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="editName" class="col-form-label">Name:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editName" name="name" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="editUsername" class="col-form-label">Username:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editUsername" name="username" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="editPassword" class="col-form-label">Password:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editPassword"name="password" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">Address:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editAddress" name="address" >
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td width="50%" style="padding-left: 10px">
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">Email:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editEmail" name="email" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="detailsId" class="col-form-label">Phone:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" class="form-control" id="editPhone" name="phone" >
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">DateOfBirth:</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="date" class="form-control" id="editDateOfBirth" name="dateOfBirth" >
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group row">
+                                                    <label for="role" class="col-form-label">Role:</label>
+                                                    <div class="col-sm-10" >
+                                                        <select class="form-control" id="editRole" name="role" required>
+                                                            <option value="USER">User</option>
+                                                            <option value="ADMIN">Admin</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="detailsId" class="col-form-label">Status:</label>
+                                                    <div class="col-sm-10">
+                                                        <select class="form-control" id="editStatus" name="status" required>
+                                                            <option value="true">Active</option>
+                                                            <option value="false">Banner</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" name="urlAvatar" id="editUrlAvatar">
+                                            </td>
+
+
+                                        </tr>
+
+                                    </table>
+                                    </form>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="updateUser">Done</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Edit modal end  -->
+
+                <!--Delete Start-->
+                <div class="modal" id="deleteModal" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Confirm Delete</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete this User?</p>
+                            </div>
+                            <div class="modal-footer">
+                                <a class="btn btn-primary" id="confirmDeleteBtn" href="">Sure</a>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Delete End-->
+
+                <!--Photo Start-->
+                <div class="modal fade" tabindex="-1" role="dialog" id="photoModal">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Avatar </h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <img id="productPhoto" src="" width="100%" height="50%">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Photo End-->
+
+                <!--Update Avatar Start-->
+                <div class="modal" id="updateAvatar" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update Avatar User</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" data-bs-dismiss="modal">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" id="frmUpdateImg" enctype="multipart/form-data" method="post">
+                                    <div class="form-group">
+                                        <label for="imgUpdate" class="col-form-label">Avatar:</label>
+                                        <input type="file" class="form-control" id="imgUpdate" name="urlAvatar">
+                                    </div>
+                                    <input type="hidden" th:value="${page}" name="page" >
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!--Update Image End-->
+
+                <!--Pagination Start-->
+                <form th:action="@{/admin/api/v1/user}" id="formSubmit">
+                    <input type="hidden" th:value="${totalPages}" id="totalPages">
+                    <input type="hidden" th:value="${page}" name="page" id="page">
+                    <input type="hidden" value="" name="limit" id="limit">
+                    <input type="hidden" value="" name="message" >
+                </form>
+
+                <div th:replace="~{admin/fragments/pagination::pagination}"></div>
+                <!--Pagination End-->
+
+                <!--Footer Start-->
+                <div th:replace="~{admin/fragments/footer::footer}"></div>
+                <!--Footer End-->
+
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script th:src="@{/admin/js/scripts.js}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
+        <script th:src="@{/admin/js/datatables-simple-demo.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+    <script th:src="@{/admin/js/user.js}"></script>
+
+
+    <!--Script Ajax Start-->
+    <script type="text/javascript">
+        /*  Add User Ajax  */
+        $('#addNew').click(function (e){
+        e.preventDefault();
+        var data = {};
+        var formData = $('#formAddModal').serializeArray();
+        $.each(formData,function (i,v){
+            data[""+v.name+""] = v.value;
+        })
+        $.ajax({
+            url : "/admin/api/v1/user",
+            type: "POST",
+            contentType : 'application/json',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            success : function (data){
+                window.location.href = "/admin/api/v1/user?page="+totalPages+"&limit=4&message=success";
+
+            },
+            error : function (data){
+                window.location.href = "/admin/api/v1/user?page="+totalPages+"&limit=4&message=fail";
+            }
+        })
+
+
+    })
+        /*  Update User Ajax Start */
+        $('#updateUser').click(function (e){
+            e.preventDefault();
+            var data = {};
+            var formData = $('#formEditModal').serializeArray();
+
+            $.each(formData,function (i,v){
+                data[""+v.name+""] = v.value;
+            })
+            $.ajax({
+                url : "/admin/api/v1/user/"+data.id,
+                type: 'PUT',
+                contentType: 'application/json',
+                dataType: 'json',
+                data: JSON.stringify(data),
+
+                success: function (data){
+                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=4&message=success";
+                },
+                error : function (data){
+                    window.location.href = "/admin/api/v1/user?page"+currentPage+"&limit=4&message=fail";
+                }
+
+
+            })
+
+
+        })
+
+        /*  Update Product Ajax End */
+
+        /*Delete Product Ajax*/
+        $('#confirmDeleteBtn').click(function (e){
+
+            var href = $('#confirmDeleteBtn').attr('href');
+            e.preventDefault();
+            $.ajax({
+                url : href,
+                method: 'DELETE',
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (){
+                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=4&message=success";
+                },
+                error: function (){
+                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=4&message=fail";
+                },
+
+            })
+
+
+        })
+        /*Delete Product Ajax*/
+
+        /*Pagination Start*/
+        var totalPages = $('#totalPages').val();
+        var currentPage = $('#page').val();
+        var limit = 4;
+
+        $('#pagination').twbsPagination({
+            totalPages: totalPages,
+            startPage : currentPage,
+            visiblePages: 10,
+            onPageClick: function (event, page) {
+               if(currentPage!= page){
+                   $('#limit').val(limit)
+                   $('#page').val(page);
+                   $('#formSubmit').submit();
+               }
+            }
+        });
+        /*Pagination End*/
+
+    </script>
+    <!--Script Ajax End -->
+    </body>
+
+</html>

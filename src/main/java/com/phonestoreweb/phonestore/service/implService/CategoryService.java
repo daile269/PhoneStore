@@ -53,4 +53,11 @@ public class CategoryService implements ICategoryService {
     public int totalItem() {
         return (int) categoryRepository.count();
     }
+
+    @Override
+    public Category findByCode(String category) {
+        return categoryRepository.findByName(category);
+    }
+
+
 }

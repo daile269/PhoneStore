@@ -30,6 +30,7 @@ public class Product {
 
     @Formula("price*(100-discount)/100")
     private double currentPrice;
+
     private Integer saleNumber;
     private Integer stockNumber;
 

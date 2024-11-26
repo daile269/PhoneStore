@@ -444,8 +444,9 @@ textarea.input {
 \*----------------------------*/
 
 #header {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 50px;
+  padding-bottom: 40px;
+  margin-top: -45px;
   background-color: #15161D;
 }
 
@@ -854,7 +855,9 @@ textarea.input {
 
 .product {
   position: relative;
-  margin: 15px 0px;
+  margin: 40px -40px;
+  margin-left: 20px;
+  padding: 0px 40px;
   -webkit-box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
   box-shadow: 0px 0px 0px 0px #E4E7ED, 0px 0px 0px 1px #E4E7ED;
   -webkit-transition: 0.2s all;
@@ -1049,7 +1052,10 @@ textarea.input {
   -webkit-transition: 0.2s all;
   transition: 0.2s all;
 }
-
+.add-to-cart{
+  margin: 0px 23px;
+  width: 85%;
+}
 .product .add-to-cart .add-to-cart-btn>i {
   position: absolute;
   left: 0;

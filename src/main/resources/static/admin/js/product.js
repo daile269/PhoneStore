@@ -15,6 +15,7 @@ $( document ).ready(function() {
             $('#editDiscount').val(item.discount);
             $('#editPrice').val(item.price);
             $('#editRam').val(item.ram);
+            $('#editImage').val(item.image);
             $('#editScreen').val(item.screen);
             $('#editStockNumber').val(item.stockNumber);
             $('#editSaleNumber').val(item.saleNumber);

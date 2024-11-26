@@ -30,6 +30,7 @@
                 </div>
                 <!--Message-->
                 <main>
+                    <h1 class="title" style="display: flex;justify-content: center;color: #0f5132">Product</h1>
                     <button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#addModal">
                         <i class="fa-solid fa-plus"></i> Add New Product
                     </button>
@@ -39,6 +40,7 @@
                             <th>#</th>
                             <th>Image</th>
                             <th>Name</th>
+                            <th>Category</th>
                             <th>Price (VNĐ)</th>
                             <th>Sale Number</th>
                             <th>Stock Number</th>
@@ -49,15 +51,16 @@
                         <tr th:each="item:${products}" th:with=" tt= ${limit}*(${page}-1)">
                             <td th:text="${(itemStat.index)+1+ tt}"></td>
                             <td>
-                                <a id="photoButton" th:href="@{'/admin/uploads/'+ ${item.image}}">
-                                    <img th:src="@{'/admin/uploads/'+ ${item.image}}" width="65px" height="50px" >
+                                <a id="photoButton" th:href="@{${item.image}}">
+                                    <img th:src="@{${item.image}}" width="65px" height="50px" >
                                 </a>
                                 <a id="updateImageBtn" alt="Update Image Product" th:href="@{/admin/api/v1/product/image/{id}(id=${item.id})}">
                                     <i class="fa-solid fa-pen-to-square" style="height: 21px; width: 35px; margin-left: 10px"></i>
                                 </a>
                             </td>
                             <td th:text="${item.name}"></td>
-                            <td th:text="${#numbers.formatDecimal(item.currentPrice,2,0)}"></td>
+                            <td th:text="${item.categoryProduct.name}"></td>
+                            <td th:text="${#numbers.formatDecimal(item.currentPrice, 0, 'DEFAULT', 0, 'POINT')}"></td>
                             <td th:text="${item.saleNumber}"></td>
                             <td th:text="${item.stockNumber}"></td>
                             <td>
@@ -127,12 +130,12 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="form-group row">
-                                                    <label for="image" class="col-form-label">Image:</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="file" class="form-control" id="image" name="image">
-                                                    </div>
-                                                </div>
+<!--                                                <div class="form-group row">-->
+<!--                                                    <label for="image" class="col-form-label">Image:</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="file" class="form-control" id="image" name="image">-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
                                                 <div class="form-group row">
                                                     <label for="price" class="col-form-label">Price:</label>
                                                     <div class="col-sm-10">
@@ -278,12 +281,12 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="form-group row">
-                                                    <label for="image" class="col-form-label">Image:</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="file" class="form-control" id="editImage" >
-                                                    </div>
-                                                </div>
+<!--                                                <div class="form-group row">-->
+<!--                                                    <label for="editImage" class="col-form-label">Image:</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="file" class="form-control" id="editImage" >-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
                                                 <div class="form-group row">
                                                     <label for="price" class="col-form-label">Price:</label>
                                                     <div class="col-sm-10">
@@ -355,7 +358,7 @@
                                                         <input type="number" class="form-control" id="editSaleNumber" name="saleNumber" >
                                                     </div>
                                                 </div>
-
+                                        <input type="hidden" name="image" id="editImage">
                                             </td>
 
                                         </tr>
@@ -366,7 +369,7 @@
 
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" id="updateSupplier">Done</button>
+                                <button type="button" class="btn btn-primary" id="updateProduct">Done</button>
                             </div>
                         </div>
                     </div>
@@ -433,12 +436,12 @@
                                                     </div>
 
                                                 </div>
-                                                <div class="form-group row">
-                                                    <label for="image" class="col-form-label">Image:</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="file" class="form-control" id="detailsImage" readonly>
-                                                    </div>
-                                                </div>
+<!--                                                <div class="form-group row">-->
+<!--                                                    <label for="detailsImage" class="col-form-label">Image:</label>-->
+<!--                                                    <div class="col-sm-10">-->
+<!--                                                        <input type="file" class="form-control" id="detailsImage" readonly>-->
+<!--                                                    </div>-->
+<!--                                                </div>-->
                                                 <div class="form-group row">
                                                     <label for="price" class="col-form-label">Price:</label>
                                                     <div class="col-sm-10">
@@ -551,7 +554,7 @@
                 <!--Delete End-->
 
                 <!--Photo Start-->
-                <div class="modal fade" tabindex="-1" role="dialog" id="photoModal">
+                        <div class="modal fade" tabindex="-1" role="dialog" id="photoModal">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -587,6 +590,7 @@
                                         <label for="imgUpdate" class="col-form-label">Image:</label>
                                         <input type="file" class="form-control" id="imgUpdate" name="image">
                                     </div>
+                                    <input type="hidden" th:value="${page}" name="page" >
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
@@ -632,26 +636,9 @@
     <script>
 
 
-        /*Pagination Start*/
-        var totalPages = $('#totalPages').val();
-        var currentPage = $('#page').val();
-        var limit = 4;
 
-        $('#pagination').twbsPagination({
-            totalPages: totalPages,
-            startPage : currentPage,
-            visiblePages: 10,
-            onPageClick: function (event, page) {
-                if(currentPage!= page){
-                    $('#limit').val(limit)
-                    $('#page').val(page);
-                    $('#formSubmit').submit();
-                }
-            }
-        });
-        /*Pagination End*/
 
-        /*Add Supplier Start*/
+        /*Add Product Start*/
 
 
         $('#addNew').click(function (e){
@@ -670,18 +657,18 @@
                 dataType: 'json',
                 data: JSON.stringify(data),
                 success: function (e){
-                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=success";
+                    window.location.href = "/admin/api/v1/product?page="+totalPages+"&limit=4&message=success";
                 },
                 error: function (e){
-                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=fail";
+                    window.location.href = "/admin/api/v1/product?page="+totalPages+"&limit=4&message=fail";;
                 }
             })
         })
-        /*Add Supplier End*/
+        /*Add Product End*/
 
-        /*  Update Category Ajax Start */
+        /*  Update Product Ajax Start */
 
-        $('#updateSupplier').click(function (e){
+        $('#updateProduct').click(function (e){
             e.preventDefault();
             var data = {};
             var formData = $('#formEditModal').serializeArray();
@@ -698,10 +685,10 @@
                 data: JSON.stringify(data),
 
                 success: function (data){
-                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=success";
+                    window.location.href = "/admin/api/v1/product?page="+currentPage+"&limit=4&message=success";
                 },
                 error : function (data){
-                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=fail";
+                    window.location.href = "/admin/api/v1/product?page"+currentPage+"&limit=4&message=fail";
                 }
 
 
@@ -710,9 +697,9 @@
 
         })
 
-        /*  Update Category Ajax End */
+        /*  Update Product Ajax End */
 
-        /*Delete Category Ajax*/
+        /*Delete Product Ajax*/
         $('#confirmDeleteBtn').click(function (e){
 
             var href = $('#confirmDeleteBtn').attr('href');
@@ -723,18 +710,35 @@
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function (){
-                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=success";
+                    window.location.href = "/admin/api/v1/product?page="+currentPage+"&limit=4&message=success";
                 },
                 error: function (){
-                    window.location.href = "/admin/api/v1/product?page=1&limit=4&message=fail";
+                    window.location.href = "/admin/api/v1/product?page="+currentPage+"&limit=4&message=fail";
                 },
 
             })
 
 
         })
-        /*Delete Category Ajax*/
+        /*Delete Product Ajax*/
+        /*Pagination Start*/
+        var totalPages = $('#totalPages').val();
+        var currentPage = $('#page').val();
+        var limit = 4;
 
+        $('#pagination').twbsPagination({
+            totalPages: totalPages,
+            startPage : currentPage,
+            visiblePages: 10,
+            onPageClick: function (event, page) {
+                if(currentPage!= page){
+                    $('#limit').val(limit)
+                    $('#page').val(page);
+                    $('#formSubmit').submit();
+                }
+            }
+        });
+        /*Pagination End*/
     </script>
     </body>
 </html>

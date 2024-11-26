@@ -24,15 +24,18 @@ public class User {
     private String username;
     private String password;
     private String name;
+    private String urlAvatar;
     private String email;
     private String phone;
     private String address;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateOfBirth;
-
     @Value("true")
     private Boolean status;
+
+    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'USER'")
+    private String role;
 
     @OneToMany(mappedBy = "userOrder")
     private List<Orders> orders;

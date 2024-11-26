@@ -19,4 +19,6 @@ public interface ICategoryService {
     void deleteOneCategory(long id);
 
     int totalItem();
+
+    Category findByCode(String category);
 }

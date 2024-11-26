@@ -1,0 +1,9 @@
+Admin:
+username: daile269
+password: daile269
+
+username: admin
+password: admin
+User
+username: nguyenhoangy
+password: test123

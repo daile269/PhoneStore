@@ -64,22 +64,10 @@ public class ProductController {
        return productService.saveProduct(product);
     }
     @RequestMapping (value = "/image/{id}",method = {RequestMethod.POST, RequestMethod.GET})
-    public String updateProductImage(@PathVariable Long id,
-                               @RequestParam ("image") MultipartFile image){
-        Product product = productService.updateProductImage(id,image.getOriginalFilename());
-        if (product != null){
-            try {
-                File saveFile = new File("src/main/resources/static/admin/uploads");
-                Path path = Paths.get(saveFile.getAbsolutePath()+File.separator+image.getOriginalFilename());
-                if(!saveFile.exists()){
-                    saveFile.mkdirs();
-                }
-               Files.copy(image.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        return "redirect:/admin/api/v1/product?page=1&limit=4&message=";
+    public String updateProductImage(@PathVariable Long id,@RequestParam ("page")  int page,
+                               @RequestParam ("image") MultipartFile imageFile) throws Exception {
+        Product product = productService.updateProductImage(id,imageFile);
+        return "redirect:/admin/api/v1/product?limit=4&message=&page="+page;
     }
 
     @PutMapping(value = "/{id}")
