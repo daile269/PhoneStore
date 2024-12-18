@@ -5,6 +5,7 @@ import com.phonestoreweb.phonestore.repositories.CategoryRepository;
 import com.phonestoreweb.phonestore.service.ICategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ public class CategoryService implements ICategoryService {
 
 
     @Override
+//    @PreAuthorize("hasRole('ADMIN')")
     public List<Category> getAllCategories(Pageable pageable) {
         return categoryRepository.findAll(pageable).getContent();
     }
@@ -32,12 +34,14 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+//    @PreAuthorize("hasRole('ADMIN')")
     public Category saveCategory(Category category) {
         categoryRepository.save(category);
         return category;
     }
 
     @Override
+//    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCategories(long[] ids) {
         for (long item: ids){
             categoryRepository.deleteById(item);
@@ -45,6 +49,7 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
+//    @PreAuthorize("hasRole('ADMIN')")
     public void deleteOneCategory(long id) {
         categoryRepository.deleteById(id);
     }

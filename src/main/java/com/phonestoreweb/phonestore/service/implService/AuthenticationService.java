@@ -152,6 +152,7 @@ public class AuthenticationService implements IAuthenticationService {
                 .build();
     }
 
+
     private SignedJWT verifyToken(String token,boolean isRefresh){
         try {
             JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
@@ -178,5 +179,6 @@ public class AuthenticationService implements IAuthenticationService {
             throw new RuntimeException(e);
         }
     }
+
 
 }

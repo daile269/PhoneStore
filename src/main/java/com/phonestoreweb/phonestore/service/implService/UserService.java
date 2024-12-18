@@ -30,13 +30,13 @@ public class UserService implements IUserService {
     @Autowired
     private UploadImageService uploadImageService;
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUserPageable(Pageable pageable) {
         return userRepository.findAll(pageable).getContent();
     }

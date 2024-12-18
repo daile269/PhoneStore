@@ -8,6 +8,7 @@ import com.phonestoreweb.phonestore.service.IProductService;
 import com.phonestoreweb.phonestore.untils.FileUploadUntil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +23,7 @@ public class ProductService implements IProductService {
     private UploadImageService uploadImageService;
 
     @Override
+ //   @PreAuthorize("hasRole('ADMIN')")
     public List<Product> getAllProduct(Pageable pageable) {
         return productRepository.findAll(pageable).getContent();
     }
@@ -37,12 +39,14 @@ public class ProductService implements IProductService {
     }
 
     @Override
+ //   @PreAuthorize("hasRole('ADMIN')")
     public Product saveProduct(Product product) {
        return productRepository.save(product);
     }
 
 
     @Override
+//    @PreAuthorize("hasRole('ADMIN')")
     public void deleteProducts(long[] ids) {
         for (long item:ids){
         productRepository.deleteById(item);
@@ -60,6 +64,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
+//    @PreAuthorize("hasRole('ADMIN')")
     public Product updateProductImage(Long id, MultipartFile imageFile) throws Exception {
         Product product = productRepository.findById(id).orElse(null);
         FileUploadUntil.assertAllowed(imageFile,FileUploadUntil.IMAGE_PATTERN);

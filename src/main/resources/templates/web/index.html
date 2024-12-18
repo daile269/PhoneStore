@@ -1,9 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
 <!--Head Start-->
-<head th:replace="~{web/fragments/head::head}"></head>
+<head th:replace="~{web/fragments/head::head}">
+
+</head>
+<script>
+	$(document).ready(function () {
+		const token = localStorage.getItem("jwtToken");
+		console.log(token)
+		$.ajax({
+			url: '/admin',
+			method: 'GET',
+			headers: {
+				'Authorization': 'Bearer ' + token
+			},
+			success: function(data) {
+				console.log('Access granted to admin page');
+			},
+			error: function(xhr) {
+				console.log(this.headers)
+				// window.location.href = '/login';
+			}
+		});
+	});
+</script>
 <!--Head End-->
 	<body>
+	<!--Authentication Start-->
+
+	<!--Authentication End-->
 		<!-- HEADER -->
 			<header th:replace="~{web/fragments/header::header}"></header>
 		<!-- /HEADER -->
@@ -677,6 +702,7 @@
 		<script th:src="@{/web/js/nouislider.min.js}"></script>
 		<script th:src="@{/web/js/jquery.zoom.min.js}"></script>
 		<script th:src="@{/web/js/main.js}"></script>
+
 
 	</body>
 </html>
