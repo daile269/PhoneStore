@@ -15,6 +15,8 @@ public enum ErrorCode {
     UNAUTHENTICATED(1006, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
+    PRODUCT_NOT_FOUND(909,"Product not found",HttpStatus.NOT_FOUND),
+    CART_NOT_FOUND(999,"Cart not found",HttpStatus.NOT_FOUND);
     ;
 
     private final int code;

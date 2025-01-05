@@ -49,18 +49,19 @@ public class SecurityConfig {
                         request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                                 .requestMatchers(RESOURCES).permitAll()
  //                               .requestMatchers("/admin/**").hasRole("ADMIN")
-                               .anyRequest().authenticated()
+//                               .anyRequest().authenticated()
+                                .anyRequest().permitAll()
                         )
                ;
 
 
-        http.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(jwtConfigurer
-                            -> jwtConfigurer.decoder(customJwtDecoder)
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-
-                );
+//        http.oauth2ResourceServer(oauth2 ->
+//                oauth2.jwt(jwtConfigurer
+//                            -> jwtConfigurer.decoder(customJwtDecoder)
+//                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+//                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+//
+//                );
         http.formLogin(AbstractHttpConfigurer::disable);
         return http.build();
     }

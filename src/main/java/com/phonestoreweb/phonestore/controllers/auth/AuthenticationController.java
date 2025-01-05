@@ -3,17 +3,14 @@ package com.phonestoreweb.phonestore.controllers.auth;
 import com.phonestoreweb.phonestore.dto.request.*;
 import com.phonestoreweb.phonestore.dto.response.AuthenticationResponse;
 import com.phonestoreweb.phonestore.dto.response.IntrospectResponse;
-import com.phonestoreweb.phonestore.models.User;
 import com.phonestoreweb.phonestore.service.IAuthenticationService;
-
 import com.phonestoreweb.phonestore.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 

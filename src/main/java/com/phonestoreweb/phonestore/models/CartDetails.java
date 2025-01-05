@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.math.BigDecimal;
+
 @Entity
 @Data
 @NoArgsConstructor
@@ -19,6 +21,9 @@ public class CartDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private BigDecimal unitPrice;
+    private BigDecimal totalPrice;
+
     @Value("1")
     private Integer quantity;
 
@@ -29,6 +34,10 @@ public class CartDetails {
 
     @ManyToOne
     @JoinColumn(name = "cartId",insertable = false,updatable = false)
-    private Cart cartDetails;
+    private Cart cart;
     private Long cartId;
+
+    public void setTotalPrice() {
+        this.totalPrice = this.unitPrice.multiply(new BigDecimal(quantity));
+    }
 }
