@@ -4,26 +4,6 @@
 <head th:replace="~{web/fragments/head::head}">
 
 </head>
-<script>
-	$(document).ready(function () {
-		const token = localStorage.getItem("jwtToken");
-		console.log(token)
-		$.ajax({
-			url: '/admin',
-			method: 'GET',
-			headers: {
-				'Authorization': 'Bearer ' + token
-			},
-			success: function(data) {
-				console.log('Access granted to admin page');
-			},
-			error: function(xhr) {
-				console.log(this.headers)
-				// window.location.href = '/login';
-			}
-		});
-	});
-</script>
 <!--Head End-->
 	<body>
 	<!--Authentication Start-->

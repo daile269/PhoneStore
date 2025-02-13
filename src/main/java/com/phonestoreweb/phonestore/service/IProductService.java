@@ -25,4 +25,6 @@ public interface IProductService {
 
     List<Product> getProductByCategory(long categoryId);
 
+    List<Product> getProductByKeyword(String keyword,Pageable pageable);
+
 }

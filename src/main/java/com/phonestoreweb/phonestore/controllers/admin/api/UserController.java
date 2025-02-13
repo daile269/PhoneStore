@@ -68,7 +68,7 @@ public class UserController {
         return userService.getAllUser();
     }
     @RequestMapping (value = "/image/{id}",method = {RequestMethod.POST, RequestMethod.GET})
-    public String updateProductImage(@PathVariable Long id,@RequestParam ("page")  int page,
+    public String updateUserImage(@PathVariable Long id,@RequestParam ("page")  int page,
                                      @RequestParam ("urlAvatar") MultipartFile avatarFile) throws Exception {
         User user = userService.updateAvatarUser(id,avatarFile);
         return "redirect:/admin/api/v1/user?limit=4&message=&page="+page;

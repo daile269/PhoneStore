@@ -71,5 +71,8 @@ $( document ).ready(function() {
         $('#photoModal #productPhoto').attr('src', href);
         $('#photoModal').modal('show');
     });
-
+    $('#search-btn').on('click',function (event){
+        var keyword = $('#input_keyword').val();
+        window.location.href = "/admin/api/v1/product/"+keyword+"?page="+1+"&limit=7&message=";
+    })
 });

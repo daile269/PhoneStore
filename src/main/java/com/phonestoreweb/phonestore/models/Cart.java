@@ -28,7 +28,7 @@ public class Cart {
     private Long userId;
 
     @OneToMany(mappedBy = "cart")
-    private List<CartDetails> cartDetails;
+    private List<CartDetails> cartDetails = new ArrayList<>();
 
     private BigDecimal totalAmount = BigDecimal.ZERO;
 
@@ -49,7 +49,7 @@ public class Cart {
     }
 
     private void updateTotalAmount() {
-        this.totalAmount = (BigDecimal) cartDetails.stream().map(cartDetails1 -> {
+        this.totalAmount = cartDetails.stream().map(cartDetails1 -> {
             BigDecimal unitPrice = cartDetails1.getUnitPrice();
             if(unitPrice==null){
                 return BigDecimal.ZERO;

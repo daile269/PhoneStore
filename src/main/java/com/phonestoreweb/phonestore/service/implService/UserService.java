@@ -42,7 +42,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    @PostAuthorize("returnObject.username==authentication.name or hasRole('ADMIN')")
+//    @PostAuthorize("returnObject.username==authentication.name or hasRole('ADMIN')")
     public User findUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }

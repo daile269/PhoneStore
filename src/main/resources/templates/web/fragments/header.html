@@ -8,7 +8,9 @@
                 <li><a href="#"><i class="fa fa-map-marker"></i> Tan Binh District, Ho Chi Minh City</a></li>
             </ul>
             <ul class="header-links pull-right">
-                <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+<!--                <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>-->
+                <li><a th:href="@{/login}"><i class="fa fa-user-o"></i> Login</a></li>
+                <li><a th:href="@{/register}"><i class="fa-solid fa-registered"></i> Register</a></li>
             </ul>
         </div>
     </div>
@@ -34,7 +36,7 @@
                 <div class="col-md-6">
                     <div class="header-search">
                         <form>
-                            <select >
+                            <select style="padding: 10.5px 0;">
                                 <option>All Categories</option>
                                 <option th:each="category : ${categories}"
                                         th:value="${category.id}"

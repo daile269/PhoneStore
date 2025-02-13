@@ -32,9 +32,15 @@
                 <!--Message-->
                 <main>
                     <h1 class="title" style="display: flex;justify-content: center;color: #5c636a">User</h1>
-                  <button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#addModal">
-                      <i class="fa-solid fa-plus"></i>  Add New User
-                  </button>
+                    <div class="nav_action">
+                        <button type="button" class="btn btn-primary m-3" data-toggle="modal" data-target="#addModal">
+                            <i class="fa-solid fa-plus"></i> Add New User
+                        </button>
+                        <div class="input_search">
+                            <input class="input" placeholder="Search here">
+                            <button class="search-btn">Search</button>
+                        </div>
+                    </div>
                     <table class="table" >
                         <thead>
                         <tr>
@@ -485,11 +491,11 @@
             dataType: 'json',
             data: JSON.stringify(data),
             success : function (data){
-                window.location.href = "/admin/api/v1/user?page="+totalPages+"&limit=4&message=success";
+                window.location.href = "/admin/api/v1/user?page="+totalPages+"&limit=7&message=success";
 
             },
             error : function (data){
-                window.location.href = "/admin/api/v1/user?page="+totalPages+"&limit=4&message=fail";
+                window.location.href = "/admin/api/v1/user?page="+totalPages+"&limit=7&message=fail";
             }
         })
 
@@ -512,10 +518,10 @@
                 data: JSON.stringify(data),
 
                 success: function (data){
-                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=4&message=success";
+                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=7&message=success";
                 },
                 error : function (data){
-                    window.location.href = "/admin/api/v1/user?page"+currentPage+"&limit=4&message=fail";
+                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=7&message=fail";
                 }
 
 
@@ -537,10 +543,10 @@
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function (){
-                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=4&message=success";
+                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=7&message=success";
                 },
                 error: function (){
-                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=4&message=fail";
+                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=7&message=fail";
                 },
 
             })
@@ -552,7 +558,7 @@
         /*Pagination Start*/
         var totalPages = $('#totalPages').val();
         var currentPage = $('#page').val();
-        var limit = 4;
+        var limit = 7;
 
         $('#pagination').twbsPagination({
             totalPages: totalPages,

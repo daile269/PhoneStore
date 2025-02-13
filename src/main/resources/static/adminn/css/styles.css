@@ -11241,3 +11241,31 @@ body {
   font-size: 0.75rem;
   border-radius: 0.375rem !important;
 }
+.input_search .input{
+  margin-right: -4px;
+  height: 40px;
+  padding: 0px 15px;
+  border: 1px solid #E4E7ED;
+  background-color: #FFF;
+  width: 300px;
+}
+.input_search {
+  display: flex;
+  align-items: center;
+}
+.input_search .search-btn{
+  height: 40px;
+  width: 100px;
+  background: #D10024;
+  color: #FFF;
+  font-weight: 700;
+  border: none;
+  border-radius: 0px 40px 40px 0px;
+  margin-right: 154px;
+}
+.nav_action{
+  display: flex;
+  justify-content: space-between;
+}
+
+

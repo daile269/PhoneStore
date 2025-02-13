@@ -80,7 +80,10 @@ public class ProductService implements IProductService {
         return productRepository.getProductByCategory(categoryId);
     }
 
-
+    @Override
+    public List<Product> getProductByKeyword(String keyword, Pageable pageable) {
+        return productRepository.getProductByKeyword(keyword,pageable);
+    }
 
 
 }

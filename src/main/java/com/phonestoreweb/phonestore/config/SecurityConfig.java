@@ -1,13 +1,9 @@
 package com.phonestoreweb.phonestore.config;
 
-import com.phonestoreweb.phonestore.service.implService.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -29,7 +25,7 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {"/","/login","/register","/auth/login","/auth/logout","/auth/refreshToken"
-            ,"/auth/introspect","/product/**","/products/**","/admin/**"};
+            ,"/auth/introspect","/product/**","/products/**"};
 
     private final String[] RESOURCES = {"/resources/**","/static/**", "/web/**","/adminn/**","/css/**", "/fonts/**", "/js/**"};
 
@@ -48,8 +44,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request.requestMatchers(PUBLIC_ENDPOINTS).permitAll()
                                 .requestMatchers(RESOURCES).permitAll()
- //                               .requestMatchers("/admin/**").hasRole("ADMIN")
-//                               .anyRequest().authenticated()
+//                                .requestMatchers("/admin/**").hasRole("ADMIN")
+//                                .anyRequest().authenticated()
                                 .anyRequest().permitAll()
                         )
                ;
@@ -60,8 +56,8 @@ public class SecurityConfig {
 //                            -> jwtConfigurer.decoder(customJwtDecoder)
 //                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
 //                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
-//
-//                );
+
+  //              );
         http.formLogin(AbstractHttpConfigurer::disable);
         return http.build();
     }

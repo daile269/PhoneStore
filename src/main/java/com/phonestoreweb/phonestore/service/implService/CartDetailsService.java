@@ -76,8 +76,12 @@ public class CartDetailsService implements ICartDetailsService {
                     item.setQuantity(quantity);
                     item.setUnitPrice(BigDecimal.valueOf(item.getProductCartDetails().getCurrentPrice()));
                     item.setTotalPrice();
+                    cartDetailsRepository.save(item);
                 });
-        BigDecimal totalAmount = cart.getTotalAmount();
+        BigDecimal totalAmount = cart.getCartDetails()
+                                    .stream()
+                                    .map(CartDetails::getTotalPrice)
+                                    .reduce(BigDecimal.ZERO,BigDecimal::add);
         cart.setTotalAmount(totalAmount);
         cartRepository.save(cart);
     }

@@ -51,6 +51,24 @@ public class ProductController {
         model.addAttribute("message",message);
         return "admin/product";
     }
+    @GetMapping(value = "/{keyword}")
+    public String getProductByKeyword(Model model,
+                             @RequestParam ("limit") int limit,
+                             @RequestParam ("page")  int page,
+                             @RequestParam("message")  String message ,
+                                      @PathVariable String keyword){
+        Pageable pageable = PageRequest.of(page-1,limit);
+        List<Product> products = productService.getProductByKeyword(keyword,pageable);
+        model.addAttribute("products",products);
+        model.addAttribute("page",page);
+        model.addAttribute("limit",limit);
+        model.addAttribute("totalPages",(int) Math.ceil((double)productService.totalItem()/limit));
+        model.addAttribute("categories",categoryService.getCategoryNoPageable());
+        model.addAttribute("suppliers",supplierService.getSupplierNoPageable());
+        model.addAttribute("message",message);
+        model.addAttribute("keyword_search",keyword);
+        return "admin/product_search";
+    }
 
     @GetMapping(value = "/findById/{id}")
     @ResponseBody
@@ -67,7 +85,7 @@ public class ProductController {
     public String updateProductImage(@PathVariable Long id,@RequestParam ("page")  int page,
                                @RequestParam ("image") MultipartFile imageFile) throws Exception {
         Product product = productService.updateProductImage(id,imageFile);
-        return "redirect:/admin/api/v1/product?limit=4&message=&page="+page;
+        return "redirect:/admin/api/v1/product?limit=7&message=&page="+page;
     }
 
     @PutMapping(value = "/{id}")

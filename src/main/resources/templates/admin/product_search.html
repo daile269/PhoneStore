@@ -611,7 +611,8 @@
                 <!--Update Image End-->
 
                 <!--Pagination Start-->
-                <form th:action="@{/admin/api/v1/product}" id="formSubmit">
+                <form action="" id="formSubmit">
+                    <input type="hidden" th:value="${keyword_search}" id="keyword_se">
                     <input type="hidden" th:value="${totalPages}" id="totalPages">
                     <input type="hidden" th:value="${page}" name="page" id="page">
                     <input type="hidden" value="" name="limit" id="limit">
@@ -646,7 +647,7 @@
 
 
         /*Add Product Start*/
-
+        var keywordSearch = $('#keyword_se').val();
 
         $('#addNew').click(function (e){
             e.preventDefault();
@@ -664,10 +665,10 @@
                 dataType: 'json',
                 data: JSON.stringify(data),
                 success: function (e){
-                    window.location.href = "/admin/api/v1/product?page="+totalPages+"&limit=7&message=success";
+                    window.location.href = "/admin/api/v1/product/"+keywordSearch+"?page="+totalPages+"&limit=7&message=success";
                 },
                 error: function (e){
-                    window.location.href = "/admin/api/v1/product?page="+totalPages+"&limit=7&message=fail";;
+                    window.location.href = "/admin/api/v1/product/"+keywordSearch+"?page="+totalPages+"&limit=7&message=fail";;
                 }
             })
         })
@@ -692,10 +693,10 @@
                 data: JSON.stringify(data),
 
                 success: function (data){
-                    window.location.href = "/admin/api/v1/product?page="+currentPage+"&limit=7&message=success";
+                    window.location.href = "/admin/api/v1/product/"+keywordSearch+"?page="+currentPage+"&limit=7&message=success";
                 },
                 error : function (data){
-                    window.location.href = "/admin/api/v1/product?page"+currentPage+"&limit=7&message=fail";
+                    window.location.href = "/admin/api/v1/product/"+keywordSearch+"?page"+currentPage+"&limit=7&message=fail";
                 }
 
 
@@ -717,10 +718,10 @@
                 contentType: 'application/json',
                 dataType: 'json',
                 success: function (){
-                    window.location.href = "/admin/api/v1/product?page="+currentPage+"&limit=7&message=success";
+                    window.location.href = "/admin/api/v1/product/"+keywordSearch+"?page="+currentPage+"&limit=7&message=success";
                 },
                 error: function (){
-                    window.location.href = "/admin/api/v1/product?page="+currentPage+"&limit=7&message=fail";
+                    window.location.href = "/admin/api/v1/product/"+keywordSearch+"?page="+currentPage+"&limit=7&message=fail";
                 },
 
             })
@@ -732,7 +733,7 @@
         var totalPages = $('#totalPages').val();
         var currentPage = $('#page').val();
         var limit = 7;
-
+        var action = "/admin/api/v1/product/"+keywordSearch;
         $('#pagination').twbsPagination({
             totalPages: totalPages,
             startPage : currentPage,
@@ -740,7 +741,8 @@
             onPageClick: function (event, page) {
                 if(currentPage!= page){
                     $('#limit').val(limit)
-                    $('#page').val(page);
+                    $('#page').val(page)
+                    $('#formSubmit').attr('action',action)
                     $('#formSubmit').submit();
                 }
             }
