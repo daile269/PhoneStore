@@ -165,10 +165,9 @@
                     const payload = parseJwt(token);
                     var role = payload.scope;
                     localStorage.setItem("jwtToken", token);
-
-                    if (role === 'ADMIN') {
+                    if (role === 'ROLE_ADMIN') {
                         window.location.href = "/admin";
-                    } else if (role === 'USER') {
+                    } else if (role === 'ROLE_USER') {
                         window.location.href = "/";
                     }
                 },

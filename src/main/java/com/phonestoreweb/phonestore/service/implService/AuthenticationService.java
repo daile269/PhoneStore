@@ -21,6 +21,7 @@ import com.phonestoreweb.phonestore.service.IAuthenticationService;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -82,7 +83,7 @@ public class AuthenticationService implements IAuthenticationService {
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
                 ))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scope",user.getRole())
+                .claim("scope","ROLE_"+user.getRole())
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -178,6 +179,12 @@ public class AuthenticationService implements IAuthenticationService {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String extractUsername(String token) throws ParseException {
+        var signToken = verifyToken(token,false);
+        String username = signToken.getJWTClaimsSet().getSubject();
+        return username;
     }
 
 

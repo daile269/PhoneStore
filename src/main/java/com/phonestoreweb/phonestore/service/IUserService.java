@@ -2,6 +2,7 @@ package com.phonestoreweb.phonestore.service;
 
 import com.phonestoreweb.phonestore.models.User;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface IUserService {
 
     boolean userIsExits(String username);
     int totalItem();
+
+    UserDetails loadUserByUsername(String username);
 }

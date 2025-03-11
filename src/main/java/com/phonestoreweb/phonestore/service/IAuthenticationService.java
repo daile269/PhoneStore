@@ -18,4 +18,6 @@ public interface IAuthenticationService {
     void logout(LogoutRequest request) throws ParseException;
 
     AuthenticationResponse refreshToken(RefreshTokenRequest request) throws ParseException;
+
+    String extractUsername(String token) throws ParseException;
 }
