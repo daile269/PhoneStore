@@ -2,6 +2,29 @@
 <html lang="en">
 <title>User Manager Page</title>
 <head th:replace="~{admin/fragments/head::head}">
+    <script>
+
+        $(document).ready(function () {
+            const token = localStorage.getItem("jwtToken");
+            console.log(token)
+            $.ajax({
+                url: '/admin',
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    "Content-Type": "application/json"
+                },
+                success: function(data) {
+                    console.log('Access granted to admin page');
+                },
+                error: function(xhr) {
+                    console.log(this.headers)
+                    window.location.href = '/login';
+                }
+            });
+        });
+    </script>
+
     <body class="sb-nav-fixed">
     <!--Header Start-->
     <div th:replace="~{admin/fragments/header::header}"></div>
@@ -73,7 +96,7 @@
                             <td th:text="${item.address}"></td>
                             <td th:text="${#dates.format(item.dateOfBirth, 'dd/MM/yyyy')}"></td>
                             <td th:text="${item.phone}"></td>
-                            <td th:text="${item.role}"></td>
+                            <td th:text="${item.roles}"></td>
                             <td>
                                 <div class="btn-group">
                                     <a th:href="@{/admin/api/v1/user/findById/{id}(id=${item.id})}" class="btn btn-primary" id="editBtn" ><i class="fa-solid fa-pen-to-square"></i></a>
@@ -150,15 +173,7 @@
                                                         <input type="date" class="form-control" id="dateOfManufacture" name="dateOfManufacture">
                                                     </div>
                                                 </div>
-                                                <div class="form-group row">
-                                                    <label for="role" class="col-form-label">Role:</label>
-                                                    <div class="col-sm-10">
-                                                        <select class="form-control" id="role" name="role" required>
-                                                            <option value="USER" selected>User</option>
-                                                            <option value="ADMIN">Admin</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
+
                                                 <input type="hidden" name="status" value="true">
                                             </td>
 
@@ -334,15 +349,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group row">
-                                                    <label for="role" class="col-form-label">Role:</label>
-                                                    <div class="col-sm-10" >
-                                                        <select class="form-control" id="editRole" name="role" required>
-                                                            <option value="USER">User</option>
-                                                            <option value="ADMIN">Admin</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
+
                                                 <div class="form-group row">
                                                     <label for="detailsId" class="col-form-label">Status:</label>
                                                     <div class="col-sm-10">
@@ -546,7 +553,7 @@
                     window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=7&message=success";
                 },
                 error: function (){
-                    window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=7&message=fail";
+                    // window.location.href = "/admin/api/v1/user?page="+currentPage+"&limit=7&message=success";
                 },
 
             })

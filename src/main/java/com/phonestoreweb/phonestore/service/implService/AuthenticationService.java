@@ -25,11 +25,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 @Service
@@ -83,7 +85,7 @@ public class AuthenticationService implements IAuthenticationService {
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()
                 ))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("scope","ROLE_"+user.getRole())
+                .claim("scope",buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -97,7 +99,6 @@ public class AuthenticationService implements IAuthenticationService {
             throw new RuntimeException(e);
         }
     }
-
     @Override
     public IntrospectResponse introspect(IntrospectRequest request) {
        String token = request.getToken();
@@ -187,5 +188,10 @@ public class AuthenticationService implements IAuthenticationService {
         return username;
     }
 
+    private String buildScope(User user){
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if(!CollectionUtils.isEmpty(user.getRoles())) user.getRoles().forEach(stringJoiner::add);
 
+        return stringJoiner.toString();
+    }
 }

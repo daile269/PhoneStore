@@ -22,25 +22,26 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 // @Slf4j
-public class UserService implements IUserService, UserDetailsService {
+public class UserService implements IUserService{
 
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private UploadImageService uploadImageService;
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
+  //  @PreAuthorize("hasRole('ADMIN')")
     public List<User> getAllUser() {
         return userRepository.findAll();
     }
 
     @Override
-//    @PreAuthorize("hasRole('ADMIN')")
+
     public List<User> getAllUserPageable(Pageable pageable) {
         return userRepository.findAll(pageable).getContent();
     }
@@ -65,6 +66,10 @@ public class UserService implements IUserService, UserDetailsService {
     public User saveUser(User user) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        HashSet<String> roles = new HashSet<>();
+        roles.add("USER");
+
+        user.setRoles(roles);
         userRepository.save(user);
         return user;
     }
@@ -98,9 +103,4 @@ public class UserService implements IUserService, UserDetailsService {
         return (int) userRepository.count();
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> userInfo = userRepository.findByUsername(username);
-        return userInfo.map(UserInfoDetails::new).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-    }
 }

@@ -5,24 +5,53 @@
 
 </head>
 <script>
-	$(document).ready(function () {
-		const token = localStorage.getItem("jwtToken");
-		$.ajax({
-			url: '/admin',
-			method: 'GET',
-			headers: {
-				'Authorization': 'Bearer ' + token
-			},
-			success: function(data) {
-				console.log('Access granted to admin page');
+	var token = localStorage.getItem("jwtToken");
+	console.log("Token:"+token)
+	function parseJwt(token) {
+		const base64Url = token.split('.')[1];
+		const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+		const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+			return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+		}).join(''));
+		return JSON.parse(jsonPayload);
+	}
 
-			},
-			error: function(xhr) {
-				// console.log(this.headers)
-				// window.location.href = '/login';
-			}
+
+	if(token!=null) {
+		$(document).ready(function() {
+			var payload = parseJwt(token);
+			$("#authenticated").empty()
+			$("#authenticated").append("<li><a><i class=\"fa fa-user-o\"></i><span id=\"auth\"></span></a></li>")
+			$("#auth").text(payload.sub)
+			$("#authenticated").append("<li style='cursor: pointer'><a id=\"logout\"><i class=\"fa-solid fa-right-from-bracket\"></i> Logout</a></li>")
+
 		});
+	} else if(token==null){
+		$(document).ready(function() {
+			$("#authenticated").empty()
+			$("#authenticated").append("<li><a href=\"/login\"><i class=\"fa fa-user-o\"></i> Login</a></li>\n" +
+					"                <li ><a href=\"/register\"><i class=\"fa-solid fa-registered\"></i> Register</a></li>")
+		});
+
+	}
+	$(document).ready(function() {
+		$("#logout").click(function() {
+			$.ajax({
+				url: '/auth/logout',
+				method: 'POST',
+				contentType: 'application/json',
+				dataType: 'json',
+				data : JSON.stringify({"token": token}),
+				success: function() {
+					localStorage.removeItem("jwtToken")
+					window.location.href = '/login';
+				},
+
+			});
+		});
+
 	});
+
 </script>
 <!--Head End-->
 	<body>

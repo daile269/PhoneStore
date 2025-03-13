@@ -27,8 +27,7 @@ public class AuthenticationController {
     @Autowired
     private IUserService userService;
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
 
     @PostMapping(value = "/login")
     public ApiResponse<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request

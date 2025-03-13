@@ -29,11 +29,11 @@ public class UserController {
         model.addAttribute("limit",limit);
         model.addAttribute("totalPages",(int) Math.ceil((double)userService.totalItem()/limit));
         model.addAttribute("message",message);
-//
-//        var authentication =  SecurityContextHolder.getContext().getAuthentication();
-//
-//        System.out.println("username: "+authentication.getName());
-//        authentication.getAuthorities().forEach(grantedAuthority -> System.out.println(grantedAuthority.getAuthority()));
+
+        var authentication =  SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println("username: "+authentication.getName());
+        authentication.getAuthorities().forEach(grantedAuthority -> System.out.println(grantedAuthority.getAuthority()));
 
         List<User> users = userService.getAllUserPageable(pageable);
         model.addAttribute("users",users);

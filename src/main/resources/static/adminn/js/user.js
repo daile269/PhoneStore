@@ -11,8 +11,7 @@ $( document ).ready(function() {
             $('#editPassword').val(item.password);
             $('#editAddress').val(item.address);
             $('#editEmail').val(item.email);
-            $('#editPhone').val(item.phone);
-            $('#editRole').val(item.role);
+            $('#editPhone').val(item.phone);;
             $('#editUrlAvatar').val(item.urlAvatar);
             $('#editDateOfBirth').val(item.dateOfBirth.substr(0,10).replace("T", " "));
             if(item.status){
@@ -33,7 +32,7 @@ $( document ).ready(function() {
             $('#detailsAddress').val(item.address);
             $('#detailsEmail').val(item.email);
             $('#detailsPhone').val(item.phone);
-            $('#detailsRole').val(item.role);
+            $('#detailsRoles').val(item.role);
             $('#detailsDateOfBirth').val(item.dateOfBirth.substr(0,10).replace("T", " "));
             if(item.status){
                 $('#detailsStatus').val("Active");

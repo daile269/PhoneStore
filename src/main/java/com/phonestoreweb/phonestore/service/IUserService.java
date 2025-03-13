@@ -22,5 +22,4 @@ public interface IUserService {
     boolean userIsExits(String username);
     int totalItem();
 
-    UserDetails loadUserByUsername(String username);
 }

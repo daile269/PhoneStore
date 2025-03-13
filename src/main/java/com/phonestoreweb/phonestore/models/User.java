@@ -11,6 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -34,8 +35,8 @@ public class User {
     @Value("true")
     private Boolean status;
 
-    @Column(nullable = false, columnDefinition = "VARCHAR(255) DEFAULT 'USER'")
-    private String role;
+    @ElementCollection
+    private Set<String> roles;
 
     @OneToMany(mappedBy = "userOrder")
     private List<Orders> orders;
